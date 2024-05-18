@@ -1,0 +1,67 @@
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/overview.css">
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+  <nav>
+    <ul class="flex flex-row justify-center items-center gap-16 p-8">
+      <li><a class="bg-slate-300 rounded-full py-4 px-6" href="/">Home</a></li>
+      <% if (user) { %>
+        <li><a class="bg-slate-300 rounded-full py-4 px-6" href="/logout">Log out</a></li> 
+      <% } else { %>
+        <li><a class="bg-slate-300 rounded-full py-4 px-6" href="/login">Login</a></li>
+        <li><a class="bg-slate-300 rounded-full py-4 px-6" href="/sign-up">Register</a></li>
+      <% } %>
+      <li><a class="bg-slate-300 rounded-full py-4 px-6" href="/users">Validate user</a></li>
+    </ul>
+  </nav>
+  <section class="flex flex-col justify-center items-center">
+    <h1 class="text-6xl font-bold">Welcome to the club</h1>
+    <% if (user && user.isAdmin) { %>
+      <p class="text-red-500">Hi admin: <%= user.username %>!</p>
+    <% } else if(user && user.isValidated) {%>
+      <p class="text-red-500">Hi member: <%= user.username %>!</p>
+    <% } %>
+    <% if (!user) { %>
+    <p class="text-red-500">Only members can see the authors of the messages</p>
+    <p>Registered users can send them</p>
+    <p>And everyone can see!</p>
+    <p class="underline"><a href="/sign-up">Join now</a></p>
+    <% } %>
+  </section>
+  <section>
+    <div>
+      <ul class="overflow-auto max-h-96 bg-slate-300 shadow-xl">
+        <% posts.reverse().forEach(post => { %>
+          <li class="flex flex-col justify-center items-center p-4">
+            <h3><%= post.title %></h3>
+            <p><%= post.content %></p>
+            <% if (user && user.isValidated) { %>
+              <p>Author: <%= post.author %></p>
+            <% } %>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+  </section>
+  <% if (user) { %>
+    <section class="w-full h-full mt-12">
+      <form method="post" class="flex flex-col justify-start items-center">
+        <input class="outline-none p-4 shadow-xl" type="text" name="title" placeholder="Type your title">
+        <textarea class="outline-none shadow-xl p-4" name="content" rows="5" cols="100" wrap="hard" placeholder="Enter your message" draggable="false"></textarea>
+        <button class="bg-red-400 rounded-sm p-4" type="submit" formaction="/posts">Submit message</button>
+      </form>
+    </section>
+  <% } else { %>
+    <section class="w-full h-full flex flex-col justify-start items-center mt-12">
+      <div>
+        <p>Please register in order to post a new message!</p>
+      </div>
+    </section>
+  <% } %>
+  
+</body>
+</html>
